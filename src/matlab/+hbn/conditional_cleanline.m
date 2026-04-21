@@ -2,10 +2,11 @@ function [EEG, status] = conditional_cleanline(EEG, opts)
 %CONDITIONAL_CLEANLINE Apply cleanline only above a sampling-rate threshold.
 %   [EEG, status] = hbn.conditional_cleanline(EEG, opts) runs pop_cleanline
 %   with the reference-pipeline parameters when opts.RunCleanline is true
-%   OR EEG.srate >= 500. At 100 Hz sampling the requested line frequencies
-%   (typically [60 120 180]) all exceed Nyquist (50 Hz), and the anti-alias
-%   filter applied during the 500->100 Hz downsample has already removed
-%   them, so the step is a no-op and is skipped.
+%   OR EEG.srate >= 500. At 100 Hz sampling the 60 Hz US line fundamental
+%   is already above the 50 Hz Nyquist, removed by the 500 -> 100 Hz
+%   anti-alias downsample that produced the local BDF files; 120 and 180
+%   Hz were never in-band. The step is therefore a no-op at 100 Hz and is
+%   skipped.
 %
 %   status is one of "applied" or "skipped_nyquist".
     arguments
