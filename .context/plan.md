@@ -17,11 +17,11 @@
 - [ ] EEGLAB 2024+ + plugins verified in MATLAB (Biosig, clean_rawdata, AMICA, ICLabel, dipfit5)
 - [ ] matlab-mcp-tools connection tested
 - [x] Contrast chosen: **Contrast 1 — Boy-only vs Puppy-only** (locked 2026-04-21, see `.context/ideas.md`)
-- [ ] Create GitHub repo + epic issue "HBN ERSP: Boy vs Puppy shots"
-- [ ] Create Phase 1-6 sub-issues, link to epic
+- [x] Create GitHub repo (public): https://github.com/neuromechanist/agentic-research-practicum
+- [x] Create epic issue #1 and Phase 1-6 sub-issues (#2-#7), linked via gh sub-issue
 
 ## Phase 1 — Preprocess R3
-**Sub-issue:** (TBD)
+**Sub-issue:** #2 (epic #1)
 **Entrypoint:** `src/matlab/phase1_preprocess.m`
 **Inputs:** BIDS root `/Volumes/S1/Datasets/HBN/L100/R3_L100_bdf`, task `ThePresent`.
 **Steps:**
@@ -35,7 +35,7 @@
 **Deliverable:** cleaned ALLEEG checkpoint + QA report (channels rejected per subject).
 
 ## Phase 2 — AMICA + dipfit
-**Sub-issue:** (TBD)
+**Sub-issue:** #3 (epic #1)
 **Entrypoint:** `src/matlab/phase2_amica.m`
 **Steps:**
 - [ ] Run AMICA per subject (start with 24-way parallel; document wall-time on local hardware)
@@ -47,7 +47,7 @@
 **Deliverable:** AMICA-decomposed ALLEEG with dipoles.
 
 ## Phase 3 — ICLabel + rejection
-**Sub-issue:** (TBD)
+**Sub-issue:** #4 (epic #1)
 **Entrypoint:** `src/matlab/phase3_iclabel.m`
 **Steps:**
 - [ ] `iclabel` on each subject
@@ -57,7 +57,7 @@
 **Deliverable:** brain-only IC sets.
 
 ## Phase 4 — Shot events + epoching
-**Sub-issue:** (TBD)
+**Sub-issue:** #5 (epic #1)
 **Entrypoint:** `src/matlab/phase4_epoch.m`
 **Steps:**
 - [ ] `expand_events` using `shot_events.tsv`; drop rows with `has_boy=n/a` AND `has_puppy=n/a`
@@ -68,7 +68,7 @@
 **Deliverable:** epoched set per subject with condition tags.
 
 ## Phase 5 — ERSP precompute + clustering
-**Sub-issue:** (TBD)
+**Sub-issue:** #6 (epic #1)
 **Entrypoint:** `src/matlab/phase5_ersp.m`
 **Steps:**
 - [ ] Build STUDY from epoched sets
@@ -78,7 +78,7 @@
 **Deliverable:** STUDY with precomputed ERSP and IC clusters.
 
 ## Phase 6 — Statistics + figures
-**Sub-issue:** (TBD)
+**Sub-issue:** #7 (epic #1)
 **Entrypoint:** `src/matlab/phase6_stats.m`
 **Steps:**
 - [ ] Group-level condition contrast per cluster (permutation test, FDR-corrected)
