@@ -18,7 +18,38 @@ Log failed attempts, parameter values that didn't work, and dead ends. Every row
 
 ## Entries
 
-_None yet. First Phase 1 run goes here._
+### Attempt: spectopo nfft/overlap overrides
+**Date:** 2026-04-21
+**Phase:** 1
+**Goal:** Reduce PSD noise by passing explicit `nfft` and `overlap` to `spectopo` inside `hbn.save_psd_figure`.
+**Command:** `spectopo(..., 'nfft', 256, 'overlap', 128)`
+**Symptom:** `pwelch` raised "The number of samples to overlap must be less than the length of the segments." spectopo's internal segment length differs from the nfft we passed in.
+**Root cause:** `spectopo` computes its own Welch-segment size from `pnts` and `srate`; overriding `overlap` breaks the invariant `overlap < segment_length`.
+**Resolution:** drop the custom `nfft`/`overlap`, rely on spectopo defaults.
+**Lesson:** prefer EEGLAB defaults unless we have a measurement-driven reason to override.
+
+### Attempt: Custom two-panel PSD plot (mean + min/max envelope)
+**Date:** 2026-04-21
+**Phase:** 1
+**Goal:** Distinct visual signature per cleaning stage, cheaper than spectopo's multi-channel render.
+**Symptom:** user preferred the canonical EEGLAB spectopo render; custom plot added complexity without matching the team's reading habit.
+**Resolution:** switched to `spectopo(..., 'plot','on')`, grabbed `gcf`, annotated with `sgtitle`, saved via `exportgraphics` at 150 DPI.
+**Lesson:** default to the EEGLAB-native visualization users expect; custom styling should come later if it adds interpretability.
+
+### Observation: dual `_channels.tsv` / `_eeg_channels.tsv` per subject
+**Date:** 2026-04-21
+**Phase:** 1
+**Context:** Local BIDS dataset at `/Volumes/S1/Datasets/HBN/L100/R3_L100_bdf` carries two channel TSVs per run: `_channels.tsv` (EEG-typed) and `_eeg_channels.tsv` (EMG-typed). The latter is a conversion artifact from `emgio` (SET -> BDF). `pop_importbids` reads the canonical `_channels.tsv` and ignores the non-spec sibling, so no action needed for Phase 1. Flag here in case a future pipeline step reads per-run TSVs directly.
+
+### Observation: Cz reference rejected by clean_rawdata
+**Date:** 2026-04-21
+**Phase:** 1
+**Context:** Cz is the dataset's original reference (`EEGReference: "Cz"`), so its samples are flat by construction. `clean_rawdata` correctly flags it as a bad channel. This matches the reference-pipeline behavior. Downstream ICA and ERSP are reference-independent. If we later want scalp-space signal at Cz for visualization, re-reference to common-average BEFORE `clean_rawdata` in a parallel branch.
+
+### Observation: pop_importbids imports every subject even when downstream filter keeps 1
+**Date:** 2026-04-21
+**Phase:** 1
+**Context:** `pop_importbids(..., 'bidstask',{'ThePresent'}, ...)` imports all 170 eligible subjects into `_bids_import_scratch/` (~1.7 GB) regardless of our `SmokeSubjectCount` limit, because the filter runs post-import via `std_rmdat`. For Stage A/B this means every run re-pays the import cost. Options considered: (a) invoke pop_importbids per subject via a temp BIDS root (expensive metadata parsing), (b) cache scratch between runs (done implicitly; scratch stays under `derivatives/` which is gitignored). Chose to accept the cost for now; revisit if wall-time becomes painful on repeated Stage A runs.
 
 ## Common Pitfalls to Watch For
 
