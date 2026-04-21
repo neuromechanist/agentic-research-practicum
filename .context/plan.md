@@ -25,14 +25,19 @@
 **Entrypoint:** `src/matlab/phase1_preprocess.m`
 **Inputs:** BIDS root `/Volumes/S1/Datasets/HBN/L100/R3_L100_bdf`, task `ThePresent`.
 **Steps:**
-- [ ] `pop_importbids` with task filter and sidecar validation
-- [ ] High-pass filter at 1 Hz (justify cutoff vs. 0.5 Hz in research.md)
-- [ ] `cleanline` on 60/120/180 Hz (justify if 100 Hz data needs only 60)
-- [ ] `clean_rawdata`: **channel rejection only**, no ASR, no interpolation yet
-- [ ] Save cleaned ALLEEG to `derivatives/preproc/`
-- [ ] Log per-subject channel-rejection counts + rationale
-- [ ] Smoke test: pipeline runs on 3 subjects end-to-end before full 184
-**Deliverable:** cleaned ALLEEG checkpoint + QA report (channels rejected per subject).
+- [x] `pop_importbids` with task filter and sidecar validation (bids-matlab-tools / EEG-BIDS 10.2)
+- [x] High-pass filter at 1 Hz (justified vs 0.5 Hz in `.context/research.md`)
+- [x] `cleanline` gated behind `srate >= 500` — skipped at 100 Hz (Nyquist rationale in research.md)
+- [x] `clean_rawdata` channel rejection only (`ChannelCriterion=0.8`, `LineNoiseCriterion=5`, no ASR, no interpolation)
+- [x] PSD PNG per cleaning stage via native `spectopo` (raw / HPF / cleanline / chanreject)
+- [x] Save cleaned EEG to `derivatives/preproc/sub-<ID>/eeg/<sub>_task-ThePresent_desc-clean_eeg.set`
+- [x] `qa_channels.csv`: per-subject channel counts + rejected labels + cleanline status + duration
+- [x] `params.json` with opts, git SHA, MATLAB + EEGLAB versions, timestamp
+- [x] Real-data smoke test on 1 subject (`test_phase1_smoke.m`) green
+- [x] Stage B on 3 subjects validates generalization (channels lost: 6 / 17 / 31 of 129)
+- [ ] Stage C full fan-out (all subjects with `ThePresent == "available"`)
+- [ ] Open PR against `develop`, run `/review-pr`, address findings, merge
+**Deliverable:** cleaned EEG checkpoint + QA CSV + 4 PSD PNGs per subject + params.json.
 
 ## Phase 2 — AMICA + dipfit
 **Sub-issue:** #3 (epic #1)
