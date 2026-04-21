@@ -1,0 +1,32 @@
+# EEG pipeline derivatives (checkpoints, not source)
+derivatives/
+*.set
+*.fdt
+*.bdf
+*.edf
+*.mat
+
+# MATLAB scratch
+*.asv
+*.m~
+slprj/
+codegen/
+
+# macOS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Python helpers (if added)
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.ty_cache/
+
+# Secrets / local config
+.env
+.env.*
+!.env.example
+*.local
